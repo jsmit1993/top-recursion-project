@@ -29,6 +29,10 @@ class Tree {
 
     insert(value) {
         const newNode = new Node(value);
+        if (this.root === null) {
+            this.root = newNode;
+            return;
+        }
         let current = this.root;
         let parent = null;
         while (current !== null) {
@@ -89,7 +93,7 @@ class Tree {
         return current;
     }
 
-    levelOrderForEah(callback) {
+    levelOrderForEach(callback) {
         if (typeof callback !== 'function') {
             throw new Error('a callback function is required');
         }
@@ -106,80 +110,70 @@ class Tree {
         }
     }
 
-    inOrderForEach(callback, printOrder = []) {
-        if (typeof callback !== 'argument') {
+    inOrderForEach(callback, current = this.root, printOrder = []) {
+        if (typeof callback !== 'function') {
             throw new Error('needs an argument');
         }
-        let current = this.root;
         if (current !== null) {
-            preOrderForEach(current.left, printOrder);
+            this.preOrderForEach(callback, current.left, printOrder);
             printOrder.push(current.data);
-            preOrderForEach(current.right, printOrder);
+            this.preOrderForEach(callback, current.right, printOrder);
         }
         return printOrder;
     }
-    preOrderForEach(callback, printOrder = []) {
-        if (typeof callback !== 'argument') {
+    preOrderForEach(callback, current = this.root, printOrder = []) {
+        if (typeof callback !== 'function') {
             throw new Error('needs an argument');
         }
-        let current = this.root;
         if (current !== null) {
             printOrder.push(current.data);
-            preOrderForEach(current.left, printOrder);
-            preOrderForEach(current.right, printOrder);
+            this.preOrderForEach(callback, current.left, printOrder);
+            this.preOrderForEach(callback, current.right, printOrder);
         }
         return printOrder;
         
     }
-    postOrderforEach(callback, printOrder = []) {
-        if (typeof callback !== 'argument') {
+    postOrderforEach(callback, current = this.root, printOrder = []) {
+        if (typeof callback !== 'function') {
             throw new Error('needs an argument');
         }
         let current = this.root;
         if (current !== null) {
-            preOrderForEach(current.left, printOrder);
-            preOrderForEach(current.right, printOrder);
+            this.preOrderForEach(callback, current.left, printOrder);
+            this.preOrderForEach(callback, current.right, printOrder);
             printOrder.push(current.data);
         }
         return printOrder;
     }
-    height(value) {
-        let current = this.root;
 
-        while (current !== null) {
-            if (value === current.data) {
-                return current
-            }
-            if (value < current.data) {
-                current = current.left;
-            } else {
-                current = current.right;
-            }
-        }
-        if (current === null) return -1;
-        const leftHeight = this.height(current.left);
-        const rightHeight = this.height(current.right);
+    
+    height(value = this.root) {
+        if (value === null) return -1;
+        const leftHeight = this.height(value.left);
+        const rightHeight = this.height(value.right);
         return 1 + Math.max(leftHeight, rightHeight);
     }
-    depth(value) {
-        let current = this.root;
-        let distance = 0;
-
-        while (current !== null) {
-            if (value === current.data) {
-                distance++;
-                return distance
-            } else if (value < current.data) {
-                current = current.left;
-            } else if (value > current.data) {
-                current = current.right;
-            } else {
-                return undefined;
-            }
+    depth(value, node = this.root, currentDepth = 0) {
+        if (node === null) return -1;
+        if (value === node.data) return currentDepth;
+        if (value < node.data) {
+            return this.depth(value, node.left, currentDepth + 1);
+        } else {
+            return this.depth(value, node.right, currentDepth + 1);
         }
     }
-    isBalanced() {}
-    reBalance() {}
+    isBalanced(current = this.root) {
+        if (current === null) return true;
+        const leftHeight = this.height(current.left);
+        const rightHeight = this.height(current.right);
+        const diff = Math.abs(leftHeight - rightHeight);
+
+        return diff <= 1 && this.isBalanced(node.left) && this.isBalanced(node.right);
+    }
+    reBalance() {
+        const values = this.inOrderForEach();
+        this.root = buildtree(values);
+    }
 }
 
 
