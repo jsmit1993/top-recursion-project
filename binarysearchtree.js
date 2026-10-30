@@ -110,22 +110,18 @@ class Tree {
         }
     }
 
-    inOrderForEach(callback, current = this.root, printOrder = []) {
-        if (typeof callback !== 'function') {
-            throw new Error('needs an argument');
-        }
+    inOrderForEach(callback = null, current = this.root, printOrder = []) {
         if (current !== null) {
-            this.preOrderForEach(callback, current.left, printOrder);
+            this.inOrderForEach(callback, current.left, printOrder);
+            if (typeof callback === 'function') callback(current);
             printOrder.push(current.data);
-            this.preOrderForEach(callback, current.right, printOrder);
+            this.inOrderForEach(callback, current.right, printOrder);
         }
         return printOrder;
     }
-    preOrderForEach(callback, current = this.root, printOrder = []) {
-        if (typeof callback !== 'function') {
-            throw new Error('needs an argument');
-        }
+    preOrderForEach(callback = null, current = this.root, printOrder = []) {
         if (current !== null) {
+            if (typeof callback === 'function') callback(current);
             printOrder.push(current.data);
             this.preOrderForEach(callback, current.left, printOrder);
             this.preOrderForEach(callback, current.right, printOrder);
@@ -133,14 +129,11 @@ class Tree {
         return printOrder;
         
     }
-    postOrderforEach(callback, current = this.root, printOrder = []) {
-        if (typeof callback !== 'function') {
-            throw new Error('needs an argument');
-        }
-        let current = this.root;
+    postOrderForEach(callback = null, current = this.root, printOrder = []) {
         if (current !== null) {
-            this.preOrderForEach(callback, current.left, printOrder);
-            this.preOrderForEach(callback, current.right, printOrder);
+            this.postOrderForEach(callback, current.left, printOrder);
+            this.postOrderForEach(callback, current.right, printOrder);
+            if (typeof callback === 'function') callback(current);
             printOrder.push(current.data);
         }
         return printOrder;
@@ -168,7 +161,7 @@ class Tree {
         const rightHeight = this.height(current.right);
         const diff = Math.abs(leftHeight - rightHeight);
 
-        return diff <= 1 && this.isBalanced(node.left) && this.isBalanced(node.right);
+        return diff <= 1 && this.isBalanced(current.left) && this.isBalanced(current.right);
     }
     reBalance() {
         const values = this.inOrderForEach();
@@ -243,3 +236,36 @@ function buildtree(array) {
 
 
 console.log(buildtree([3,1,5,7,10,30,2,3]))
+
+function randomNumbers() {
+    let randomN = Array.from({length: 16}, () => Math.floor(Math.random() * 100));
+    return randomN
+}
+
+
+
+console.log('this is the start of the odin project tests');
+
+let tree = new Tree([11, 66, 56, 58, 99, 19, 60, 55, 54, 51, 97, 56, 57, 23, 11, 86]);
+
+console.log(tree.root);
+console.log(tree.isBalanced());
+console.log('inorder');
+tree.inOrderForEach(node => {console.log(node.data)});
+console.log('preorder');
+tree.preOrderForEach(node => {console.log(node.data)});
+console.log('postorder');
+tree.postOrderForEach(node => {console.log(node.data)});
+console.log('adding numbers over 100');
+console.log(tree.insert(101));
+console.log(tree.insert(120));
+console.log(tree.insert(180));
+console.log(tree.isBalanced());
+console.log(tree.reBalance());
+console.log(tree.isBalanced());
+console.log('inorder');
+tree.inOrderForEach(node => {console.log(node.data)});
+console.log('preorder');
+tree.preOrderForEach(node => {console.log(node.data)});
+console.log('postorder');
+tree.postOrderForEach(node => {console.log(node.data)});
